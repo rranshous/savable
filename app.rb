@@ -20,7 +20,6 @@ module Savable
   end
 
   module DiskBacker
-    include NamedBacker
 
     def disk_save_root_path
       @disk_save_root_path ||= default_disk_save_root_path
@@ -40,19 +39,6 @@ module Savable
 
     def last_load
       @last_load
-    end
-
-    def save
-      disk_save
-      self
-    end
-
-    def load
-      disk_load
-      self
-    rescue Errno::ENOENT
-      raise "Could not load data: #{disk_save_path}"
-      self
     end
 
     private
@@ -93,9 +79,6 @@ module Savable
     def last_save= last_save
       @last_save = last_save
     end
-  end
-
-  module BlobKeeper
   end
 
   module MetaKeeper

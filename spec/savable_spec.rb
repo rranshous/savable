@@ -69,12 +69,15 @@ describe Savable do
 
     it "raises error if could not load data" do
       disk_backer.name = 'nonexistantfile'
-      expect{ disk_backer.load }.to raise_error
+      def disk_backer._disk_load
+        disk_load
+      end
+      expect{ disk_backer._disk_load }.to raise_error
     end
 
     it "raises error if could not save data" do
       disk_backer.name = '../../../../../../../../nothere'
-      expect{ disk_backer.save }.to raise_error
+      expect{ disk_backer.disk_save }.to raise_error
     end
 
     it "updates last load timestamp when loaded" do
@@ -82,7 +85,10 @@ describe Savable do
       def disk_backer.disk_read_file path
         'data'
       end
-      disk_backer.load
+      def disk_backer._disk_load
+        disk_load
+      end
+      disk_backer._disk_load
       expect(disk_backer.last_load.class).to eq Time
     end
 
@@ -92,7 +98,10 @@ describe Savable do
       def disk_backer.disk_write_file path, data
         'data'
       end
-      disk_backer.save
+      def disk_backer._disk_save
+        disk_save
+      end
+      disk_backer._disk_save
       expect(disk_backer.last_save.class).to eq Time
     end
 
@@ -106,7 +115,10 @@ describe Savable do
       def disk_backer.save_path
         @save_path
       end
-      disk_backer.save
+      def disk_backer._disk_save
+        disk_save
+      end
+      disk_backer._disk_save
       expect(disk_backer.save_path).to eq './data/test_object.txt'
     end
 
@@ -120,7 +132,10 @@ describe Savable do
       def disk_backer.save_path
         @save_path
       end
-      disk_backer.load
+      def disk_backer._disk_load
+        disk_load
+      end
+      disk_backer._disk_load
       expect(disk_backer.save_path).to eq './data/test_object.txt'
     end
 
