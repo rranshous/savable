@@ -4,4 +4,4 @@ require_relative './disk_backer.rb'
 require_relative './disk_backer_serializor.rb'
 require_relative './meta_keeper.rb'
 require_relative './disk_backer_meta.rb'
-
+require_relative './disk_accessor.rb'
