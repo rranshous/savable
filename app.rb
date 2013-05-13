@@ -21,6 +21,10 @@ module Savable
 
   module DiskBacker
 
+    def file_extension
+      'blob'
+    end
+
     def disk_save_root_path
       @disk_save_root_path ||= default_disk_save_root_path
     end
@@ -30,7 +34,7 @@ module Savable
     end
 
     def disk_save_path
-      File.join disk_save_root_path, name
+      File.join disk_save_root_path, "#{name}.#{file_extension}"
     end
 
     def last_save
@@ -83,7 +87,7 @@ module Savable
 
   module DiskBacker::Meta
 
-    def file_extension
+    def meta_file_extension
       'meta'
     end
 
@@ -96,7 +100,7 @@ module Savable
     end
 
     def disk_meta_save_path
-      File.join disk_meta_save_root_path, "#{name}.#{file_extension}"
+      File.join disk_meta_save_root_path, "#{name}.#{meta_file_extension}"
     end
 
     def last_meta_save

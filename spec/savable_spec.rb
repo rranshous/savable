@@ -36,6 +36,10 @@ describe Savable do
 
   describe Savable::DiskBacker do
 
+    it "has a file extension" do
+      expect(disk_backer.file_extension).not_to eq nil
+    end
+
     it "has a root save path" do
       expect(disk_backer).to respond_to :disk_save_root_path
     end
@@ -55,7 +59,7 @@ describe Savable do
 
     it "generates save path from name and base path" do
       disk_backer.name = 'test.txt'
-      expect(disk_backer.disk_save_path).to eq './data/test.txt'
+      expect(disk_backer.disk_save_path).to eq './data/test.txt.blob'
     end
 
     it "knows when it saved last" do
@@ -118,7 +122,7 @@ describe Savable do
         disk_save
       end
       disk_backer._disk_save
-      expect(disk_backer.save_path).to eq './data/test_object.txt'
+      expect(disk_backer.save_path).to eq './data/test_object.txt.blob'
     end
 
     it "loads data by name" do
@@ -135,7 +139,7 @@ describe Savable do
         disk_load
       end
       disk_backer._disk_load
-      expect(disk_backer.save_path).to eq './data/test_object.txt'
+      expect(disk_backer.save_path).to eq './data/test_object.txt.blob'
     end
 
   end
