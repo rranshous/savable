@@ -34,13 +34,17 @@ module Savable
 
     def disk_meta_save
       raise "Name must be set before save" if name.nil?
-      disk_write_file disk_meta_save_path, meta_data
+      raise "Missing serializer" unless respond_to? :serialize_native
+      raise "Missing disk writer" unless respond_to? :disk_write_file
+      disk_write_file disk_meta_save_path, serialize_native(meta_data)
       self.last_meta_save = Time.now
     end
 
     def disk_meta_load
       raise "Name must be set before load" if name.nil?
-      meta_data = disk_read_file disk_meta_save_path
+      raise "Missing deserializer" unless respond_to? :deserialize_native
+      raise "Missing disk reader" unless respond_to? :disk_read_file
+      meta_data = deserialize_native(disk_read_file disk_meta_save_path)
       self.last_meta_load = Time.now
       data
     end

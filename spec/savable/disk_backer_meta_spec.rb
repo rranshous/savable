@@ -60,6 +60,9 @@ describe Savable do
       def disk_backer_meta._disk_meta_load
         disk_meta_load
       end
+      def disk_backer_meta.deserialize_native a
+        a
+      end
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.last_meta_load.class).to eq Time
     end
@@ -75,6 +78,9 @@ describe Savable do
       end
       def disk_backer_meta.meta_data
         {}
+      end
+      def disk_backer_meta.serialize_native a
+        a
       end
       disk_backer_meta._disk_meta_save
       expect(disk_backer_meta.last_meta_save.class).to eq Time
@@ -96,6 +102,9 @@ describe Savable do
       def disk_backer_meta.meta_data
         {}
       end
+      def disk_backer_meta.serialize_native a
+        a
+      end
       disk_backer_meta._disk_meta_save
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
     end
@@ -114,6 +123,9 @@ describe Savable do
         disk_meta_load
       end
       def disk_backer_meta.meta_data
+      end
+      def disk_backer_meta.deserialize_native a
+        a
       end
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
