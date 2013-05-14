@@ -81,6 +81,17 @@ describe Savable::VersionKeeper do
       version = version_keeper.get_version_from_file_name version_name
       expect(version).to eq 'version1'
     end
+
+    it "gets version from versioned path" do
+      version_keeper.current_version = 'version1'
+      def version_keeper.file_name
+        'myfile!'
+      end
+      version_name = version_keeper.versioned_name
+      version_path = File.join '/tmp/', "#{version_name}.ext"
+      version = version_keeper.get_version_from_file_name version_path
+      expect(version).to eq 'version1'
+    end
   end
 
 end
