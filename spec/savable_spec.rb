@@ -43,7 +43,7 @@ class MasterVersioned < Master
 
 
   def save
-    self.current_version = Time.now.to_f
+    self.current_version = Time.now.to_f.to_s
     super
   end
 
