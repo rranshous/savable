@@ -27,8 +27,15 @@ describe Savable do
       expect(disk_backer_meta).to respond_to :disk_meta_save_path
     end
 
+    it "generated save name from file name" do
+      def disk_backer_meta.file_name
+        'test.txt'
+      end
+      expect(disk_backer_meta.disk_meta_save_name).to eq 'test.txt'
+    end
+
     it "generates save path from name and base path" do
-      def disk_backer_meta.name
+      def disk_backer_meta.file_name
         'test.txt'
       end
       expect(disk_backer_meta.disk_meta_save_path).to eq './data/test.txt.meta'
@@ -54,7 +61,7 @@ describe Savable do
     end
 
     it "updates last load timestamp when loaded" do
-      def disk_backer_meta.name
+      def disk_backer_meta.file_name
         'test'
       end
       def disk_backer_meta.disk_read_file path
@@ -86,7 +93,7 @@ describe Savable do
       def disk_backer_meta.serialize_native a
         a
       end
-      def disk_backer_meta.name
+      def disk_backer_meta.file_name
         'test'
       end
       disk_backer_meta._disk_meta_save
@@ -111,7 +118,7 @@ describe Savable do
       def disk_backer_meta.serialize_native a
         a
       end
-      def disk_backer_meta.name
+      def disk_backer_meta.file_name
         'test_object.txt'
       end
       disk_backer_meta._disk_meta_save
@@ -137,7 +144,7 @@ describe Savable do
       end
       def disk_backer_meta.meta_data= a
       end
-      def disk_backer_meta.name
+      def disk_backer_meta.file_name
         'test_object.txt'
       end
       disk_backer_meta._disk_meta_load

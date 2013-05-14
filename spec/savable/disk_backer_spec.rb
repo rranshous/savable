@@ -45,8 +45,15 @@ describe Savable do
       expect(disk_backer).to respond_to :disk_save_path
     end
 
+    it "generated save name from file name" do
+      def disk_backer.file_name
+        'test.txt'
+      end
+      expect(disk_backer.disk_save_name).to eq 'test.txt'
+    end
+
     it "generates save path from name and base path" do
-      def disk_backer.name
+      def disk_backer.file_name
         'test.txt'
       end
       expect(disk_backer.disk_save_path).to eq './data/test.txt.blob'
@@ -64,21 +71,21 @@ describe Savable do
       def disk_backer._disk_load
         disk_load
       end
-      def disk_backer.name
+      def disk_backer.file_name
         'nothinghere'
       end
       expect{ disk_backer._disk_load }.to raise_error
     end
 
     it "raises error if could not save data" do
-      def disk_backer.name
+      def disk_backer.file_name
         'nothinghere'
       end
       expect{ disk_backer.disk_save }.to raise_error
     end
 
     it "updates last load timestamp when loaded" do
-      def disk_backer.name
+      def disk_backer.file_name
         'test'
       end
       def disk_backer.disk_read_file path
@@ -92,7 +99,7 @@ describe Savable do
     end
 
     it "updates last save timestamp when saved" do
-      def disk_backer.name
+      def disk_backer.file_name
         'test'
       end
       disk_backer.data = 'test_data'
@@ -107,7 +114,7 @@ describe Savable do
     end
 
     it "saves data by name" do
-      def disk_backer.name
+      def disk_backer.file_name
         'test_object.txt'
       end
       disk_backer.data = 'my_data'
@@ -125,7 +132,7 @@ describe Savable do
     end
 
     it "loads data by name" do
-      def disk_backer.name
+      def disk_backer.file_name
         'test_object.txt'
       end
       disk_backer.data = 'my_data'

@@ -23,7 +23,7 @@ describe Savable::VersionKeeper do
     end
 
     it "succeeds if it has a version and a name" do
-      def version_keeper.name
+      def version_keeper.file_name
         'testname'
       end
       def version_keeper.current_version
@@ -33,7 +33,7 @@ describe Savable::VersionKeeper do
     end
 
     it "bases the versioned name off the name" do
-      def version_keeper.name
+      def version_keeper.file_name
         'testname'
       end
       def version_keeper.current_version
@@ -43,7 +43,7 @@ describe Savable::VersionKeeper do
     end
 
     it "includes current_version in versioned name" do
-      def version_keeper.name
+      def version_keeper.file_name
         'testname'
       end
       def version_keeper.current_version
@@ -67,6 +67,19 @@ describe Savable::VersionKeeper do
     it "keeps track of it's current version" do
       version_keeper.current_version = :testversion
       expect(version_keeper.current_version).to eq :testversion
+    end
+  end
+
+  describe "#get_version_from_file_name" do
+
+    it "gets version from versioned name" do
+      version_keeper.current_version = 'version1'
+      def version_keeper.file_name
+        'myfile!'
+      end
+      version_name = version_keeper.versioned_name
+      version = version_keeper.get_version_from_file_name version_name
+      expect(version).to eq 'version1'
     end
   end
 

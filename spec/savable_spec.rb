@@ -10,11 +10,18 @@ class Master < Savable::Base
   include Savable::VersionKeeper
 
   def save
+    self.current_version = Time.now.to_f
     disk_save
     disk_meta_save
   end
 
   def load
+    if current_version.nil?
+      # we need to figure out what the last version was
+      latest = find_latest_version
+      raise "No previous version found" if latest.nil?
+      self.current_version = lastest
+    end
     disk_load
     disk_meta_load
   end
@@ -27,6 +34,25 @@ class Master < Savable::Base
   def name
     file_name
   end
+
+  def disk_save_name
+    versioned_name
+  end
+
+  def disk_meta_save_name
+    versioned_name
+  end
+
+  private
+
+  def find_latest_version
+    Dir.glob("#{disk_meta_save_root_path}/*.#{meta_file_extension}")
+    .map { |path| get_version_from_file_name File.basename path }
+    .sort
+    .last
+  end
+
+
 end
 
 describe Savable do
@@ -59,12 +85,14 @@ describe Savable do
     expect(s2['success']).to eq :true
   end
 
-  it "keeps versions" do
+  it "updates versions" do
     s = Master.new
+    s.root_save_path = '/tmp/'
     s.file_name = 'testfile3'
     s.data = 'testdata'
     s.save
     first_version = s.current_version
+    s.root_save_path = '/tmp/'
     s.data = 'testdata2'
     s.save
     expect(s.current_version).not_to eq first_version

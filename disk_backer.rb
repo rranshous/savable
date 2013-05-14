@@ -15,9 +15,13 @@ module Savable
     end
 
     def disk_save_path
-      raise "Missing name method" unless self.respond_to? :name
-      raise "Missing required name" if name.nil?
-      File.join disk_save_root_path, "#{name}.#{file_extension}"
+      raise "Missing file name method" unless self.respond_to? :file_name
+      raise "Missing required file name" if file_name.nil?
+      File.join disk_save_root_path, "#{disk_save_name}.#{file_extension}"
+    end
+
+    def disk_save_name
+      file_name
     end
 
     def last_save
@@ -35,13 +39,13 @@ module Savable
     end
 
     def disk_save
-      raise "Name must be set before save" if name.nil?
+      raise "File name must be set before save" if file_name.nil?
       disk_write_file disk_save_path, data
       self.last_save = Time.now
     end
 
     def disk_load
-      raise "Name must be set before load" if name.nil?
+      raise "File name must be set before load" if file_name.nil?
       self.data = disk_read_file disk_save_path
       self.last_load = Time.now
       self.data
