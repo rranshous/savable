@@ -65,8 +65,12 @@ describe Savable::VersionKeeper do
     end
 
     it "keeps track of it's current version" do
-      version_keeper.current_version = :testversion
-      expect(version_keeper.current_version).to eq :testversion
+      version_keeper.current_version = "testversion"
+      expect(version_keeper.current_version).to eq "testversion"
+    end
+
+    it "only takes strings as versions" do
+      expect { version_keeper.current_version = :test_version }.to raise_error
     end
   end
 
