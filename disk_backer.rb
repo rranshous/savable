@@ -7,7 +7,7 @@ module Savable
     end
 
     def disk_save_root_path
-      @disk_save_root_path ||= default_disk_save_root_path
+      @disk_save_root_path || default_disk_save_root_path
     end
 
     def disk_save_root_path= new_path
@@ -15,6 +15,8 @@ module Savable
     end
 
     def disk_save_path
+      raise "Missing name method" unless self.respond_to? :name
+      raise "Missing required name" if name.nil?
       File.join disk_save_root_path, "#{name}.#{file_extension}"
     end
 
@@ -40,21 +42,9 @@ module Savable
 
     def disk_load
       raise "Name must be set before load" if name.nil?
-      data = disk_read_file disk_save_path
+      self.data = disk_read_file disk_save_path
       self.last_load = Time.now
-      data
-    end
-
-    def disk_read_file path
-      File.open path, 'r' do |fh|
-        fh.read
-      end
-    end
-
-    def disk_write_file path, data
-      File.open disk_save_path, 'w' do |fh|
-        fh.write data
-      end
+      self.data
     end
 
     def last_load= when_loaded

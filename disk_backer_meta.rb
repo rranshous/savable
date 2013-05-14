@@ -7,7 +7,7 @@ module Savable
     end
 
     def disk_meta_save_root_path
-      @disk_meta_save_root_path ||= default_disk_meta_save_root_path
+      @disk_meta_save_root_path || default_disk_meta_save_root_path
     end
 
     def disk_meta_save_root_path= new_path
@@ -44,7 +44,7 @@ module Savable
       raise "Name must be set before load" if name.nil?
       raise "Missing deserializer" unless respond_to? :deserialize_native
       raise "Missing disk reader" unless respond_to? :disk_read_file
-      meta_data = deserialize_native(disk_read_file disk_meta_save_path)
+      self.meta_data = deserialize_native(disk_read_file disk_meta_save_path)
       self.last_meta_load = Time.now
       data
     end
