@@ -2,11 +2,26 @@ require_relative '../../app.rb'
 
 describe Savable do
 
-  let(:base) { Savable::Base.new }
-  let(:named_backer) { base.extend(Savable::NamedBacker) }
-  let(:disk_backer) { named_backer.extend(Savable::DiskBacker) }
-
   describe Savable::DiskBacker do
+
+    let(:base) { Savable::Base.new }
+    let(:named_backer) {
+      Savable::Base.instance_eval do
+        extend(Savable::NamedBacker)
+        self
+      end.new
+    }
+    let(:disk_backer_cls) {
+      Savable::Base.instance_eval do
+        include(Savable::NamedBacker)
+        include(Savable::DiskBacker)
+        self
+      end
+    }
+    let(:disk_backer) {
+      disk_backer_cls.new
+    }
+
 
     it "has a file extension" do
       expect(disk_backer.file_extension).not_to eq nil
@@ -21,6 +36,7 @@ describe Savable do
     end
 
     it "can set it's default save path" do
+      disk_backer.disk_save_root_path # test edge
       disk_backer.disk_save_root_path = './mydata'
       expect(disk_backer.disk_save_root_path).to eq './mydata'
     end
@@ -83,7 +99,6 @@ describe Savable do
     it "saves data by name" do
       disk_backer.name = 'test_object.txt'
       disk_backer.data = 'my_data'
-      save_path = nil
       def disk_backer.disk_write_file path, data
         @save_path = path
       end
@@ -100,7 +115,6 @@ describe Savable do
     it "loads data by name" do
       disk_backer.name = 'test_object.txt'
       disk_backer.data = 'my_data'
-      save_path = nil
       def disk_backer.disk_read_file path
         @save_path = path
       end
@@ -112,6 +126,13 @@ describe Savable do
       end
       disk_backer._disk_load
       expect(disk_backer.save_path).to eq './data/test_object.txt.blob'
+    end
+
+    it "does not leak default save path between instances" do
+      d1 = disk_backer_cls.new
+      d2 = disk_backer_cls.new
+      d1.disk_save_root_path = 'tmp'
+      expect(d2.disk_save_root_path).not_to eq 'tmp'
     end
 
   end

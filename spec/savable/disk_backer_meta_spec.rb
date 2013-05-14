@@ -18,6 +18,7 @@ describe Savable do
     end
 
     it "can set it's default save path" do
+      disk_backer_meta.disk_meta_save_root_path # read to avoid possible edge
       disk_backer_meta.disk_meta_save_root_path = './mydata'
       expect(disk_backer_meta.disk_meta_save_root_path).to eq './mydata'
     end
@@ -130,7 +131,6 @@ describe Savable do
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
     end
-
 
   end
 
