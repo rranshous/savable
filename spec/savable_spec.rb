@@ -63,8 +63,7 @@ class MasterVersioned < Master
     Dir.glob("#{disk_meta_save_root_path}/*.#{meta_file_extension}")
     .map { |path| get_version_from_file_name File.basename path }
     .compact
-    .map(&:to_f)
-    .sort
+    .sort_by { |v| v.to_f }
     .last
   end
 
@@ -116,6 +115,32 @@ describe Savable do
     s.data = 'testdata2'
     s.save
     expect(s.current_version).not_to eq first_version
+  end
+
+  it "loads previous versions data" do
+    s = MasterVersioned.new
+    s.root_save_path = '/tmp/_test/'
+    s.file_name = 'testfile3'
+    s.data = 'testdata'
+    s.save
+    s2 = MasterVersioned.new
+    s2.root_save_path = '/tmp/_test/'
+    s2.file_name = 'testfile3'
+    s2.load
+    expect(s2.data).to eq 'testdata'
+  end
+
+  it "updates it's current version after load" do
+    s = MasterVersioned.new
+    s.root_save_path = '/tmp/_test/'
+    s.file_name = 'testfile3'
+    s.data = 'testdata'
+    s.save
+    s2 = MasterVersioned.new
+    s2.root_save_path = '/tmp/_test/'
+    s2.file_name = 'testfile3'
+    s2.load
+    expect(s2.current_version).to eq s.current_version
   end
 
 end
