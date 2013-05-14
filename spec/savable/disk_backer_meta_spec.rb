@@ -64,6 +64,8 @@ describe Savable do
       def disk_backer_meta.deserialize_native a
         a
       end
+      def disk_backer_meta.meta_data= a
+      end
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.last_meta_load.class).to eq Time
     end
@@ -127,6 +129,8 @@ describe Savable do
       end
       def disk_backer_meta.deserialize_native a
         a
+      end
+      def disk_backer_meta.meta_data= a
       end
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
