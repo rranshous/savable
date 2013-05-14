@@ -1,10 +1,10 @@
 module Savable
   module NamedBacker
-    def name
+    def file_name
       @name
     end
 
-    def name= my_name
+    def file_name= my_name
       @name = my_name
     end
   end

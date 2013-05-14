@@ -23,36 +23,51 @@ class Master < Savable::Base
     self.disk_save_root_path = new_root
     self.disk_meta_save_root_path = new_root
   end
+
+  def name
+    file_name
+  end
 end
 
 describe Savable do
 
   it "does simple blob saves / loads" do
     s = Master.new
-    s.name = 'testfile'
+    s.file_name = 'testfile'
     s.data = 'test content'
     s.root_save_path = '/tmp/'
     s.save
     expect(File.exist?('/tmp/testfile.blob')).to eq true
     expect(File.open('/tmp/testfile.blob').read).to eq 'test content'
     s2 = Master.new
-    s2.name = 'testfile'
+    s2.file_name = 'testfile'
     s2.root_save_path = '/tmp/'
     s2.load
     expect(s2.data).to eq 'test content'
   end
 
-  it "does meta data saves" do
+  it "does meta data saves / loads" do
     s = Master.new
     s.root_save_path = '/tmp/'
-    s.name = 'testfile2'
+    s.file_name = 'testfile2'
     s['success'] = :true
     s.save
     s2 = Master.new
     s2.root_save_path = '/tmp/'
-    s2.name = 'testfile2'
+    s2.file_name = 'testfile2'
     s2.load
     expect(s2['success']).to eq :true
+  end
+
+  it "keeps versions" do
+    s = Master.new
+    s.file_name = 'testfile3'
+    s.data = 'testdata'
+    s.save
+    first_version = s.current_version
+    s.data = 'testdata2'
+    s.save
+    expect(s.current_version).not_to eq first_version
   end
 
 end

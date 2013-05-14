@@ -15,6 +15,7 @@ module Savable
     end
 
     def disk_meta_save_path
+      raise "Must have name" if name.nil?
       File.join disk_meta_save_root_path, "#{name}.#{meta_file_extension}"
     end
 

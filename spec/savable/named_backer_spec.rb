@@ -7,13 +7,13 @@ describe Savable do
 
   describe Savable::NamedBacker do
   
-    it "has name" do
-      expect(named_backer.name).to eq nil
+    it "has file name" do
+      expect(named_backer.file_name).to eq nil
     end
 
-    it "sets it's name" do
-      named_backer.name = 'test'
-      expect(named_backer.name).to eq 'test'
+    it "sets it's file name" do
+      named_backer.file_name = 'test'
+      expect(named_backer.file_name).to eq 'test'
     end
 
   end

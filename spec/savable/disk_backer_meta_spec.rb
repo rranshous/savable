@@ -28,7 +28,9 @@ describe Savable do
     end
 
     it "generates save path from name and base path" do
-      disk_backer_meta.name = 'test.txt'
+      def disk_backer_meta.name
+        'test.txt'
+      end
       expect(disk_backer_meta.disk_meta_save_path).to eq './data/test.txt.meta'
     end
 
@@ -41,7 +43,6 @@ describe Savable do
     end
 
     it "does not raise error if could not load data" do
-      disk_backer_meta.name = 'nonexistantfile'
       def disk_backer_meta._disk_meta_load
         disk_meta_load
       end
@@ -49,12 +50,13 @@ describe Savable do
     end
 
     it "raises error if could not save data" do
-      disk_backer_meta.name = '../../../../../../../../nothere'
       expect{ disk_backer_meta.disk_meta_save }.to raise_error
     end
 
     it "updates last load timestamp when loaded" do
-      disk_backer_meta.name = 'test'
+      def disk_backer_meta.name
+        'test'
+      end
       def disk_backer_meta.disk_read_file path
         'data'
       end
@@ -71,7 +73,6 @@ describe Savable do
     end
 
     it "updates last save timestamp when saved" do
-      disk_backer_meta.name = 'test'
       disk_backer_meta.data = 'test_data'
       def disk_backer_meta.disk_write_file path, data
         'data'
@@ -85,12 +86,14 @@ describe Savable do
       def disk_backer_meta.serialize_native a
         a
       end
+      def disk_backer_meta.name
+        'test'
+      end
       disk_backer_meta._disk_meta_save
       expect(disk_backer_meta.last_meta_save.class).to eq Time
     end
 
     it "saves data by name" do
-      disk_backer_meta.name = 'test_object.txt'
       disk_backer_meta.data = 'my_data'
       save_path = nil
       def disk_backer_meta.disk_write_file path, data
@@ -108,12 +111,14 @@ describe Savable do
       def disk_backer_meta.serialize_native a
         a
       end
+      def disk_backer_meta.name
+        'test_object.txt'
+      end
       disk_backer_meta._disk_meta_save
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
     end
 
     it "loads data by name" do
-      disk_backer_meta.name = 'test_object.txt'
       disk_backer_meta.data = 'my_data'
       save_path = nil
       def disk_backer_meta.disk_read_file path
@@ -131,6 +136,9 @@ describe Savable do
         a
       end
       def disk_backer_meta.meta_data= a
+      end
+      def disk_backer_meta.name
+        'test_object.txt'
       end
       disk_backer_meta._disk_meta_load
       expect(disk_backer_meta.save_path).to eq './data/test_object.txt.meta'
