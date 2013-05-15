@@ -41,10 +41,24 @@ class MasterVersioned < Master
     versioned_name
   end
 
-
   def save
     self.current_version = Time.now.to_f.to_s
-    super
+    super # save down data
+    create_symbolic_link_to_blob
+    create_symbolic_link_to_meta
+  end
+
+  def create_symbolic_link_to_blob
+    # HACK
+    link_path = self.disk_save_path.gsub /.T.*?T/, '' # remove version
+    File.unlink link_path if File.exist? link_path
+    FileUtils.symlink disk_save_path, link_path
+  end
+
+  def create_symbolic_link_to_meta
+    link_path = self.disk_meta_save_path.gsub /T.*?T/, '' # remove version
+    File.unlink link_path if File.exist? link_path
+    FileUtils.symlink disk_meta_save_path, link_path
   end
 
   def load
@@ -141,6 +155,24 @@ describe Savable do
     s2.file_name = 'testfile3'
     s2.load
     expect(s2.current_version).to eq s.current_version
+  end
+
+  it "keeps a symbolic link to the newest version" do
+    s = MasterVersioned.new
+    s.root_save_path = '/tmp/_test/'
+    s.file_name = 'testfile3'
+    s.data = 'testdata'
+    s.save
+    symbolic_path = '/tmp/_test/testfile3.blob'
+    expect(File.exist? symbolic_path).to eq true
+    expect(File.open(symbolic_path).read).to eq 'testdata'
+    s2 = MasterVersioned.new
+    s2.root_save_path = '/tmp/_test/'
+    s2.file_name = 'testfile3'
+    s2.data = 'testdata2'
+    s2.save
+    expect(File.exist? symbolic_path).to eq true
+    expect(File.open(symbolic_path).read).to eq 'testdata2'
   end
 
 end
