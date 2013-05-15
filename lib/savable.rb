@@ -1,11 +1,11 @@
-require_relative './base.rb'
-require_relative './named_backer.rb'
-require_relative './disk_backer.rb'
-require_relative './disk_backer_serializor.rb'
-require_relative './meta_keeper.rb'
-require_relative './disk_backer_meta.rb'
-require_relative './disk_accessor.rb'
-require_relative './version_keeper.rb'
+require_relative 'savable/base.rb'
+require_relative 'savable/named_backer.rb'
+require_relative 'savable/disk_backer.rb'
+require_relative 'savable/disk_backer_serializor.rb'
+require_relative 'savable/meta_keeper.rb'
+require_relative 'savable/disk_backer_meta.rb'
+require_relative 'savable/disk_accessor.rb'
+require_relative 'savable/version_keeper.rb'
 
 class Savable::Savable < Savable::Base
   include Savable::NamedBacker

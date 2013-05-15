@@ -1,4 +1,4 @@
-require_relative '../../app.rb'
+require_relative '../base'
 
 describe Savable::VersionKeeper do
   
