@@ -25,4 +25,15 @@ describe DiskAccessor do
     expect(disk_accessor.disk_read_file('/tmp/test2.file')).to(eq('testing'))
   end
 
+  it "provides a disk based lock" do
+    expect(disk_accessor).to respond_to :disk_based_lock
+  end
+
+  it "provides a waitout on the lock" do
+    s = Time.now
+    disk_accessor.disk_based_lock 'test' do
+      expect { disk_accessor.disk_based_lock('test','0', 1) }.to raise_error
+    end
+    expect(Time.now.to_i - s.to_i).to eq 1
+  end
 end
